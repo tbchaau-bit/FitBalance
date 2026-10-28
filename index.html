@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FitBalance - Quản lý thực đơn & Tính toán Calo thông minh</title>
+  <meta name="description" content="Ứng dụng FitBalance giúp bạn lên thực đơn khoa học, theo dõi lượng calo và dinh dưỡng đa lượng (Protein, Carbs, Fat) chuẩn xác từng bữa ăn.">
+  
+  <!-- Favicon / SVG Leaf Icon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2310b981'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z'/></svg>">
+  
+  <!-- Google Fonts: Plus Jakarta Sans & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Application CSS -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- PPTX Presentation Banner (Chế độ Báo Cáo Slide) -->
+  <div class="pptx-banner" id="pptxBanner">
+    <div class="pptx-watermark">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+      <span>BÁO CÁO THỰC ĐƠN & PHÂN TÍCH CALO TRONG NGÀY — FITBALANCE</span>
+    </div>
+    <button class="btn btn-secondary" id="exitPptxBtn" style="padding: 0.35rem 0.8rem; font-size: 0.78rem;">
+      ✕ Thoát chế độ Báo Cáo
+    </button>
+  </div>
+
+  <!-- Header / Navigation Bar -->
+  <header class="site-header" id="siteHeader">
+    <div class="container header-inner">
+      <!-- Logo & Brand -->
+      <a href="#" class="brand-wrapper" id="brandLink">
+        <div class="brand-logo-icon">
+          <!-- Leaf & Flame Health SVG -->
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2C7.5 2 4 5.5 4 10c0 4.5 3.5 8 8 12 4.5-4 8-7.5 8-12 0-4.5-3.5-8-8-10z"></path>
+            <path d="M12 6v6"></path>
+            <path d="M9 10l3 3 3-3"></path>
+          </svg>
+        </div>
+        <div class="brand-info">
+          <div class="brand-title">
+            Fit<span>Balance</span>
+            <span class="brand-badge">Step 3</span>
+          </div>
+          <div class="brand-subtitle">Quản lý thực đơn & Calo tự động • LocalStorage</div>
+        </div>
+      </a>
+
+      <!-- Date / Today Badge & LocalStorage Status -->
+      <div class="header-center-info">
+        <div class="date-pill">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          <span id="currentDateText">Thứ Tư, 28/10/2026</span>
+        </div>
+
+        <!-- LocalStorage Auto-save Live Indicator (Step 3) -->
+        <div class="storage-indicator-pill saved" id="storageIndicator" title="Trạng thái tự động lưu trữ dữ liệu vào LocalStorage của trình duyệt">
+          <span class="storage-dot"></span>
+          <span id="storageIndicatorText">Đã lưu LocalStorage</span>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="header-actions">
+        <!-- Nút Xóa tất cả dữ liệu / Đặt lại (Reset) - Step 3 -->
+        <button class="btn btn-secondary btn-reset-storage" id="headerResetStorageBtn" title="Xóa tất cả dữ liệu món ăn đã chọn và đặt lại thực đơn mới">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+          <span>Xóa tất cả dữ liệu / Đặt lại (Reset)</span>
+        </button>
+
+        <!-- Chế độ chụp ảnh slide PPTX -->
+        <button class="btn btn-pptx" id="togglePptxModeBtn" title="Tối ưu giao diện để chụp ảnh đưa vào PowerPoint báo cáo">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+          </svg>
+          <span>Chế Độ Báo Cáo PPTX</span>
+        </button>
+
+        <!-- Thêm món ăn mới -->
+        <button class="btn btn-outline-primary" id="openAddFoodModalBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          <span>+ Thêm Món Ăn</span>
+        </button>
+
+        <!-- Xem khay thực đơn -->
+        <button class="btn btn-primary" id="openMenuDrawerBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <path d="M16 10a4 4 0 0 1-8 0"></path>
+          </svg>
+          <span>Thực Đơn (<span id="headerSelectedCount">4</span>)</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Wrapper -->
+  <main class="container">
+
+    <!-- ====================================================================
+         1. DASHBOARD HERO: Thống Kê Calo & Tiến Trình Mục Tiêu
+         ==================================================================== -->
+    <section class="dashboard-hero" aria-label="Bảng điều khiển calo">
+      <div class="dashboard-grid">
+
+        <!-- Card 1: Tổng Lượng Calo & Thanh Tiến Trình (Hero Metric) -->
+        <div class="dash-card hero-card">
+          <div class="dash-card-header">
+            <div class="card-title-group">
+              <div class="card-icon-badge green">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path>
+                </svg>
+              </div>
+              <div>
+                <h2 class="card-title">Tổng Calo Hôm Nay</h2>
+                <span class="card-subtitle">Tiến trình nạp năng lượng trong ngày</span>
+              </div>
+            </div>
+            <!-- Nút điều chỉnh mục tiêu calo -->
+            <button class="card-target-btn" id="openTargetModalBtn" title="Chỉnh sửa mục tiêu calo">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+              Mục tiêu: <span id="targetBadgeText">2,000</span> kcal
+            </button>
+          </div>
+
+          <!-- Circular Ring & Big Numbers -->
+          <div class="calorie-main-display">
+            <!-- SVG Circular Gauge -->
+            <div class="circle-gauge-wrap">
+              <svg class="gauge-svg" viewBox="0 0 100 100">
+                <defs>
+                  <linearGradient id="greenGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#34d399" />
+                    <stop offset="100%" stop-color="#059669" />
+                  </linearGradient>
+                </defs>
+                <circle class="gauge-bg" cx="50" cy="50" r="42" />
+                <circle class="gauge-progress" id="circleProgressGauge" cx="50" cy="50" r="42" stroke-dasharray="264" stroke-dashoffset="70" />
+              </svg>
+              <div class="gauge-inner-content">
+                <span class="gauge-percent" id="gaugePercentVal">73.5%</span>
+                <span class="gauge-percent-label">Mục Tiêu</span>
+              </div>
+            </div>
+
+            <!-- Numbers Breakdown -->
+            <div class="calorie-numbers">
+              <div class="calorie-highlight">
+                <span class="calorie-val" id="consumedCaloriesVal">1,470</span>
+                <span class="calorie-unit">/ <span id="targetCaloriesVal">2,000</span> kcal</span>
+              </div>
+              <div class="calorie-target-text">
+                Còn lại: <strong id="remainingCaloriesVal">530 kcal</strong> để đạt chuẩn ngày
+              </div>
+
+              <!-- Thanh tiến trình chính nằm ngang (Progress Bar) -->
+              <div class="progress-bar-container" title="Thanh tiến trình nạp Calo">
+                <div class="progress-bar-fill" id="mainProgressBarFill" style="width: 73.5%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hộp trạng thái & Nhắc nhở thông minh -->
+          <div class="calorie-status-box" id="calorieStatusBox">
+            <div class="status-left">
+              <span class="dot" id="statusDot"></span>
+              <span id="calorieStatusText">Trạng thái lý tưởng: Thực đơn cân đối, đủ năng lượng!</span>
+            </div>
+            <span class="remaining-calories" id="calorieStatusSub">73.5%</span>
+          </div>
+        </div>
+
+        <!-- Card 2: Dinh Dưỡng Đa Lượng (Macros: Protein, Carbs, Fat) -->
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <div class="card-title-group">
+              <div class="card-icon-badge blue">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M20.2 7.8l-7.7 7.7a1 1 0 0 1-1.4 0L7.8 12.2a1 1 0 0 1 0-1.4l7.7-7.7a1 1 0 0 1 1.4 0l3.3 3.3a1 1 0 0 1 0 1.4z"></path>
+                  <path d="M5 20l5-5"></path>
+                  <path d="M2 17l5 5"></path>
+                </svg>
+              </div>
+              <div>
+                <h3 class="card-title">Cân Bằng Đa Lượng (Macros)</h3>
+                <span class="card-subtitle">Đạm • Tinh bột • Chất béo</span>
+              </div>
+            </div>
+            <span style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted);">Tỉ lệ 30:50:20</span>
+          </div>
+
+          <!-- Macro Bars -->
+          <div class="macro-list">
+            <!-- Protein -->
+            <div class="macro-item">
+              <div class="macro-header">
+                <span class="macro-name">
+                  <span class="macro-dot protein"></span>
+                  Chất Đạm (Protein)
+                </span>
+                <span class="macro-values">
+                  <strong id="macroProteinVal">125</strong>g / <span id="macroProteinTarget">140</span>g
+                </span>
+              </div>
+              <div class="macro-bar-track">
+                <div class="macro-bar-fill protein" id="macroProteinBar" style="width: 89%;"></div>
+              </div>
+            </div>
+
+            <!-- Carbs -->
+            <div class="macro-item">
+              <div class="macro-header">
+                <span class="macro-name">
+                  <span class="macro-dot carb"></span>
+                  Tinh Bột (Carbs)
+                </span>
+                <span class="macro-values">
+                  <strong id="macroCarbVal">164</strong>g / <span id="macroCarbTarget">220</span>g
+                </span>
+              </div>
+              <div class="macro-bar-track">
+                <div class="macro-bar-fill carb" id="macroCarbBar" style="width: 74%;"></div>
+              </div>
+            </div>
+
+            <!-- Fat -->
+            <div class="macro-item">
+              <div class="macro-header">
+                <span class="macro-name">
+                  <span class="macro-dot fat"></span>
+                  Chất Béo Tốt (Fat)
+                </span>
+                <span class="macro-values">
+                  <strong id="macroFatVal">46</strong>g / <span id="macroFatTarget">55</span>g
+                </span>
+              </div>
+              <div class="macro-bar-track">
+                <div class="macro-bar-fill fat" id="macroFatBar" style="width: 83%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Phân Bổ Năng Lượng Theo 4 Bữa Ăn -->
+        <div class="dash-card">
+          <div class="dash-card-header">
+            <div class="card-title-group">
+              <div class="card-icon-badge purple">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+              </div>
+              <div>
+                <h3 class="card-title">Phân Bổ Bữa Ăn</h3>
+                <span class="card-subtitle">4 bữa dinh dưỡng trong ngày</span>
+              </div>
+            </div>
+            <button class="btn-open-tray" id="quickResetMenuBtn" title="Đặt lại thực đơn về mặc định">
+              Đặt lại
+            </button>
+          </div>
+
+          <!-- 4 Mini Meal Bars -->
+          <div class="meal-summary-bars">
+            <div class="meal-mini-card">
+              <div class="meal-mini-title">🍳 Sáng</div>
+              <div class="meal-mini-cal" id="sumCalBreakfast">480</div>
+              <div class="meal-mini-count"><span id="countBreakfast">1</span> món</div>
+            </div>
+            <div class="meal-mini-card">
+              <div class="meal-mini-title">🍲 Trưa</div>
+              <div class="meal-mini-cal" id="sumCalLunch">510</div>
+              <div class="meal-mini-count"><span id="countLunch">1</span> món</div>
+            </div>
+            <div class="meal-mini-card">
+              <div class="meal-mini-title">🥗 Tối</div>
+              <div class="meal-mini-cal" id="sumCalDinner">320</div>
+              <div class="meal-mini-count"><span id="countDinner">1</span> món</div>
+            </div>
+            <div class="meal-mini-card">
+              <div class="meal-mini-title">🥑 Phụ</div>
+              <div class="meal-mini-cal" id="sumCalSnack">160</div>
+              <div class="meal-mini-count"><span id="countSnack">1</span> món</div>
+            </div>
+          </div>
+
+          <!-- Bottom: Selected Dished Avatar Stack -->
+          <div class="today-menu-preview">
+            <div class="today-dish-avatars" id="todayAvatarStack">
+              <!-- Rendered via JS -->
+            </div>
+            <button class="btn-open-tray" id="openTrayDetailBtn">
+              Xem chi tiết (<span id="trayCountBadge">4</span>) →
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         STEP 2: KẾ HOẠCH THỰC ĐƠN 4 BỮA TRONG NGÀY (DAILY MEAL PLANNER)
+         Thẻ món ăn đã chọn gọn gàng, tăng giảm số lượng & xóa món tức thì
+         ==================================================================== -->
+    <section class="meal-planner-section" id="mealPlannerSection" aria-label="Thực đơn đã chọn trong ngày">
+      <div class="section-header-row">
+        <div>
+          <div class="section-tag-pill">
+            <span class="pulse-dot"></span>
+            Tự Động Tính Toán Calo Real-time
+          </div>
+          <h2 class="section-heading">Kế Hoạch Thực Đơn 4 Bữa Hôm Nay</h2>
+          <p class="section-subheading">
+            Quản lý trực quan các món ăn đã chọn theo 4 bữa (Sáng, Trưa, Tối, Phụ). Bạn có thể bấm nút xóa hoặc tăng/giảm khẩu phần, hệ thống sẽ tự động cập nhật ngay lập tức thanh tiến trình Calo!
+          </p>
+        </div>
+        <div class="planner-actions-group">
+          <button class="btn btn-secondary btn-sm" id="plannerResetBtn" title="Khôi phục lại 4 món mẫu chuẩn dinh dưỡng (1,470 kcal)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+            Khôi Phục Mẫu
+          </button>
+          <button class="btn btn-danger-soft btn-sm" id="plannerClearAllBtn" title="Xóa tất cả dữ liệu món ăn trong ngày và làm mới LocalStorage">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            Xóa tất cả dữ liệu / Đặt lại (Reset)
+          </button>
+        </div>
+      </div>
+
+      <!-- 4 Meal Boards Grid -->
+      <div class="meal-boards-grid">
+        <!-- 1. Bữa Sáng Board -->
+        <div class="meal-board breakfast" data-meal="breakfast">
+          <div class="meal-board-header">
+            <div class="meal-board-title">
+              <span class="meal-emoji">🍳</span>
+              <div>
+                <h3>Bữa Sáng</h3>
+                <span class="meal-target-hint">Năng lượng khởi đầu</span>
+              </div>
+            </div>
+            <div class="meal-board-subtotal">
+              <span class="meal-cal-num" id="boardCalBreakfast">0</span> <small>kcal</small>
+            </div>
+          </div>
+          <div class="meal-items-container" id="boardListBreakfast">
+            <!-- Rendered via JS -->
+          </div>
+          <button class="btn-add-to-meal" data-meal="breakfast">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            + Thêm món vào Bữa Sáng
+          </button>
+        </div>
+
+        <!-- 2. Bữa Trưa Board -->
+        <div class="meal-board lunch" data-meal="lunch">
+          <div class="meal-board-header">
+            <div class="meal-board-title">
+              <span class="meal-emoji">🍲</span>
+              <div>
+                <h3>Bữa Trưa</h3>
+                <span class="meal-target-hint">Bữa chính giàu protein</span>
+              </div>
+            </div>
+            <div class="meal-board-subtotal">
+              <span class="meal-cal-num" id="boardCalLunch">0</span> <small>kcal</small>
+            </div>
+          </div>
+          <div class="meal-items-container" id="boardListLunch">
+            <!-- Rendered via JS -->
+          </div>
+          <button class="btn-add-to-meal" data-meal="lunch">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            + Thêm món vào Bữa Trưa
+          </button>
+        </div>
+
+        <!-- 3. Bữa Tối Board -->
+        <div class="meal-board dinner" data-meal="dinner">
+          <div class="meal-board-header">
+            <div class="meal-board-title">
+              <span class="meal-emoji">🥗</span>
+              <div>
+                <h3>Bữa Tối</h3>
+                <span class="meal-target-hint">Thanh đạm, nhẹ bụng</span>
+              </div>
+            </div>
+            <div class="meal-board-subtotal">
+              <span class="meal-cal-num" id="boardCalDinner">0</span> <small>kcal</small>
+            </div>
+          </div>
+          <div class="meal-items-container" id="boardListDinner">
+            <!-- Rendered via JS -->
+          </div>
+          <button class="btn-add-to-meal" data-meal="dinner">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            + Thêm món vào Bữa Tối
+          </button>
+        </div>
+
+        <!-- 4. Bữa Phụ Board -->
+        <div class="meal-board snack" data-meal="snack">
+          <div class="meal-board-header">
+            <div class="meal-board-title">
+              <span class="meal-emoji">🥑</span>
+              <div>
+                <h3>Bữa Phụ</h3>
+                <span class="meal-target-hint">Chống đói, phục hồi</span>
+              </div>
+            </div>
+            <div class="meal-board-subtotal">
+              <span class="meal-cal-num" id="boardCalSnack">0</span> <small>kcal</small>
+            </div>
+          </div>
+          <div class="meal-items-container" id="boardListSnack">
+            <!-- Rendered via JS -->
+          </div>
+          <button class="btn-add-to-meal" data-meal="snack">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            + Thêm món vào Bữa Phụ
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         3. BỘ LỌC & TÌM KIẾM MÓN ĂN (FILTER & SEARCH TOOLBAR)
+         ==================================================================== -->
+    <section class="catalog-section" aria-label="Danh mục món ăn">
+      <div class="filter-toolbar">
+        <div class="toolbar-top-row">
+          <!-- Search Box -->
+          <div class="search-box-wrap">
+            <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input 
+              type="text" 
+              class="search-input" 
+              id="foodSearchInput" 
+              placeholder="Tìm kiếm món ăn, nguyên liệu (ví dụ: Phở bò, ức gà, yến mạch, tôm...)" 
+              aria-label="Tìm kiếm món ăn"
+            />
+          </div>
+
+          <!-- Controls: Sort & Filter -->
+          <div class="toolbar-controls">
+            <!-- Calorie Range Selector -->
+            <select class="select-custom" id="calorieRangeSelect" aria-label="Mức calo">
+              <option value="all">Mọi mức Calo</option>
+              <option value="under-300">Dưới 300 kcal (Nhẹ bụng)</option>
+              <option value="300-500">300 - 500 kcal (Chuẩn bữa)</option>
+              <option value="above-500">Trên 500 kcal (Giàu năng lượng)</option>
+            </select>
+
+            <!-- Sort By -->
+            <select class="select-custom" id="sortSelect" aria-label="Sắp xếp món ăn">
+              <option value="default">Sắp xếp: Mặc định</option>
+              <option value="cal-asc">Calo: Thấp đến Cao</option>
+              <option value="cal-desc">Calo: Cao đến Thấp</option>
+              <option value="protein-desc">Nhiều Protein nhất</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Meal Category Tabs -->
+        <div class="meal-tabs-wrapper">
+          <div class="meal-tabs" role="tablist">
+            <button class="tab-btn active" data-category="all" role="tab" aria-selected="true">
+              Tất Cả Món <span class="badge-count" id="badgeCountAll">23</span>
+            </button>
+            <button class="tab-btn" data-category="breakfast" role="tab" aria-selected="false">
+              🍳 Bữa Sáng <span class="badge-count" id="badgeCountBreakfast">6</span>
+            </button>
+            <button class="tab-btn" data-category="lunch" role="tab" aria-selected="false">
+              🍲 Bữa Trưa <span class="badge-count" id="badgeCountLunch">6</span>
+            </button>
+            <button class="tab-btn" data-category="dinner" role="tab" aria-selected="false">
+              🥗 Bữa Tối <span class="badge-count" id="badgeCountDinner">5</span>
+            </button>
+            <button class="tab-btn" data-category="snack" role="tab" aria-selected="false">
+              🥑 Bữa Phụ <span class="badge-count" id="badgeCountSnack">6</span>
+            </button>
+          </div>
+
+          <!-- Quick Nutrition Tags -->
+          <div class="filter-tags-group">
+            <span class="tag-chip" data-tag="Eat Clean">🌿 Eat Clean</span>
+            <span class="tag-chip" data-tag="Giàu Protein">💪 Giàu Protein</span>
+            <span class="tag-chip" data-tag="Món Việt">🇻🇳 Món Việt</span>
+            <span class="tag-chip" data-tag="Thuần Chay">🌱 Thuần Chay</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Result Counter & Quick Info -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; font-size: 0.88rem; color: var(--text-secondary);">
+        <div>
+          Đang hiển thị: <strong id="catalogCountText" style="color: var(--text-main);">23</strong> món ăn dinh dưỡng
+        </div>
+        <div style="font-size: 0.8rem; color: var(--text-muted);">
+          * Nhấn <strong>"+ Thêm vào thực đơn"</strong> để tính toán calo thời gian thực
+        </div>
+      </div>
+
+      <!-- ==================================================================
+           3. LƯỚI THẺ MÓN ĂN (FOOD CARDS GRID) - GIAO DIỆN BẮT MẮT CHO PPTX
+           ================================================================== -->
+      <div class="food-grid" id="foodGridContainer">
+        <!-- Rendered by JavaScript dynamically -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ====================================================================
+       4. DRAWER / SLIDE TRAY: THỰC ĐƠN ĐÃ CHỌN TRONG NGÀY
+       ==================================================================== -->
+  <div class="menu-drawer-backdrop" id="menuDrawerBackdrop"></div>
+  <aside class="menu-drawer" id="menuDrawer" aria-label="Thực đơn hôm nay">
+    <div class="drawer-header">
+      <div class="drawer-title">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" color="#10b981">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+        </svg>
+        <span>Thực Đơn Trong Ngày</span>
+      </div>
+      <button class="drawer-close-btn" id="closeMenuDrawerBtn" aria-label="Đóng khay thực đơn">✕</button>
+    </div>
+
+    <!-- Drawer Body -->
+    <div class="drawer-body" id="drawerItemList">
+      <!-- Items dynamically populated via JS -->
+    </div>
+
+    <!-- Drawer Footer Summary -->
+    <div class="drawer-footer">
+      <div class="drawer-summary-row">
+        <span class="drawer-sum-title">Tổng Calo Hôm Nay:</span>
+        <span class="drawer-sum-cal" id="drawerTotalCalories">1,470 kcal</span>
+      </div>
+      <div style="display: flex; gap: 0.5rem; justify-content: space-between; font-size: 0.8rem; color: var(--text-secondary);">
+        <span>Protein: <strong id="drawerTotalP">125g</strong></span>
+        <span>Carbs: <strong id="drawerTotalC">164g</strong></span>
+        <span>Fat: <strong id="drawerTotalF">46g</strong></span>
+      </div>
+      <div style="display: flex; gap: 0.5rem; margin-top: 0.25rem;">
+        <button class="btn btn-secondary" id="clearAllSelectedBtn" style="flex: 1;">
+          Xóa Tất Cả
+        </button>
+        <button class="btn btn-primary" id="drawerApplyBtn" style="flex: 2;">
+          Xác Nhận Thực Đơn ✓
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ====================================================================
+       5. MODAL: XEM CHI TIẾT MÓN ĂN
+       ==================================================================== -->
+  <div class="modal-overlay" id="foodDetailModal">
+    <div class="modal-card">
+      <button class="modal-close-icon" id="closeDetailModalBtn" aria-label="Đóng chi tiết">✕</button>
+      <img id="detailImg" src="" alt="Món ăn" class="modal-header-img">
+      <div class="modal-body">
+        <div>
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem;">
+            <span class="badge-meal-type" id="detailMealBadge">Bữa Ăn</span>
+            <span style="font-family: var(--font-display); font-size: 1.25rem; font-weight: 800; color: var(--primary-600);" id="detailCalories">
+              480 kcal
+            </span>
+          </div>
+          <h2 style="font-family: var(--font-display); font-size: 1.4rem; font-weight: 800; color: var(--text-main);" id="detailTitle">
+            Tên món ăn
+          </h2>
+          <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 2px;" id="detailPortion">
+            Định lượng 1 phần
+          </div>
+        </div>
+
+        <!-- Description -->
+        <p style="font-size: 0.92rem; color: var(--text-secondary); line-height: 1.6;" id="detailDesc">
+          Mô tả dinh dưỡng của món ăn...
+        </p>
+
+        <!-- Macro Breakdown Box in Modal -->
+        <div style="background: var(--bg-surface-secondary); padding: 1rem; border-radius: var(--radius-lg); border: 1px solid var(--border-subtle);">
+          <div style="font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.6rem;">
+            Giá Trị Dinh Dưỡng Đa Lượng (Trong 1 khẩu phần)
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; text-align: center;">
+            <div style="background: white; padding: 0.6rem; border-radius: var(--radius-md);">
+              <div style="font-size: 0.72rem; color: var(--protein-color); font-weight: 700;">ĐẠM (PROTEIN)</div>
+              <div style="font-size: 1.15rem; font-weight: 800; color: var(--text-main);" id="detailProtein">34g</div>
+            </div>
+            <div style="background: white; padding: 0.6rem; border-radius: var(--radius-md);">
+              <div style="font-size: 0.72rem; color: var(--carb-color); font-weight: 700;">TINH BỘT (CARBS)</div>
+              <div style="font-size: 1.15rem; font-weight: 800; color: var(--text-main);" id="detailCarbs">62g</div>
+            </div>
+            <div style="background: white; padding: 0.6rem; border-radius: var(--radius-md);">
+              <div style="font-size: 0.72rem; color: var(--fat-color); font-weight: 700;">CHẤT BÉO (FAT)</div>
+              <div style="font-size: 1.15rem; font-weight: 800; color: var(--text-main);" id="detailFat">10g</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action inside modal -->
+        <button class="btn btn-primary" id="detailAddMenuBtn" style="padding: 0.8rem; font-size: 0.95rem; width: 100%;">
+          + Thêm Món Này Vào Thực Đơn Hôm Nay
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       6. MODAL: ĐIỀU CHỈNH MỤC TIÊU CALO TRONG NGÀY
+       ==================================================================== -->
+  <div class="modal-overlay" id="targetModal">
+    <div class="modal-card" style="max-width: 440px;">
+      <div style="padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between;">
+        <h3 style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 800; color: var(--text-main);">
+          🎯 Cài Đặt Mục Tiêu Calo
+        </h3>
+        <button class="drawer-close-btn" id="closeTargetModalBtn">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.85rem; color: var(--text-secondary);">
+          Thiết lập lượng Calo bạn muốn nạp trong ngày để ứng dụng tự động tính toán thanh tiến trình và cảnh báo:
+        </p>
+        <div class="form-group">
+          <label class="form-label" for="customTargetInput">Mục tiêu Calo hàng ngày (kcal):</label>
+          <input type="number" id="customTargetInput" class="form-input" value="2000" min="1000" max="5000" step="50">
+        </div>
+        
+        <!-- Preset quick buttons -->
+        <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+          <button class="tag-chip preset-target" data-cal="1500">Giảm cân (1,500 kcal)</button>
+          <button class="tag-chip preset-target active" data-cal="2000">Duy trì (2,000 kcal)</button>
+          <button class="tag-chip preset-target" data-cal="2400">Tăng cơ (2,400 kcal)</button>
+        </div>
+
+        <button class="btn btn-primary" id="saveTargetBtn" style="width: 100%; margin-top: 0.5rem;">
+          Lưu Mục Tiêu Mới
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       7. MODAL: THÊM MÓN ĂN MỚI TỰ CHỌN VÀO THƯ VIỆN
+       ==================================================================== -->
+  <div class="modal-overlay" id="addFoodModal">
+    <div class="modal-card" style="max-width: 500px;">
+      <div style="padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between;">
+        <h3 style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 800; color: var(--text-main);">
+          🥗 Thêm Món Ăn Tùy Chỉnh
+        </h3>
+        <button class="drawer-close-btn" id="closeAddFoodModalBtn">✕</button>
+      </div>
+      <form class="modal-body" id="addFoodForm">
+        <div class="form-group">
+          <label class="form-label" for="newFoodName">Tên món ăn (*):</label>
+          <input type="text" id="newFoodName" class="form-input" placeholder="Ví dụ: Cơm tấm gạo lứt, Bún riêu ức gà..." required>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="newFoodCategory">Bữa ăn (*):</label>
+            <select id="newFoodCategory" class="form-select" required>
+              <option value="breakfast">Bữa Sáng</option>
+              <option value="lunch" selected>Bữa Trưa</option>
+              <option value="dinner">Bữa Tối</option>
+              <option value="snack">Bữa Phụ</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="newFoodCalories">Lượng Calo (kcal) (*):</label>
+            <input type="number" id="newFoodCalories" class="form-input" placeholder="Ví dụ: 450" required min="10" max="2500">
+          </div>
+        </div>
+
+        <div class="form-grid-3">
+          <div class="form-group">
+            <label class="form-label" for="newFoodP">Protein (g):</label>
+            <input type="number" id="newFoodP" class="form-input" placeholder="30" value="25" min="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="newFoodC">Carbs (g):</label>
+            <input type="number" id="newFoodC" class="form-input" placeholder="50" value="45" min="0">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="newFoodF">Fat (g):</label>
+            <input type="number" id="newFoodF" class="form-input" placeholder="10" value="8" min="0">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="newFoodPortion">Khẩu phần & Định lượng:</label>
+          <input type="text" id="newFoodPortion" class="form-input" placeholder="Ví dụ: 1 phần (~350g)">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="newFoodTags">Thẻ (phân cách dấu phẩy):</label>
+          <input type="text" id="newFoodTags" class="form-input" placeholder="Eat Clean, Món Việt, Tự Nấu">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="newFoodDesc">Mô tả hoặc nguyên liệu chính:</label>
+          <textarea id="newFoodDesc" class="form-textarea" rows="2" placeholder="Ghi chú nguyên liệu, cách chế biến..."></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">
+          Lưu Món Vào Danh Mục & Thực Đơn
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       8. MODAL: CHỌN MÓN NHANH CHO TỪNG BỮA (QUICK MEAL PICKER MODAL)
+       ==================================================================== -->
+  <div class="modal-overlay" id="quickAddMealModal">
+    <div class="modal-card" style="max-width: 640px;">
+      <div style="padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between;">
+        <div>
+          <h3 style="font-family: var(--font-display); font-size: 1.15rem; font-weight: 800; color: var(--text-main);" id="quickAddModalTitle">
+            🍽️ Thêm Món Vào Bữa Ăn
+          </h3>
+          <span style="font-size: 0.75rem; color: var(--text-muted);">Bấm "+ Thêm ngay" để đưa món vào bữa ăn này</span>
+        </div>
+        <button class="drawer-close-btn" id="closeQuickAddModalBtn">✕</button>
+      </div>
+
+      <div style="padding: 0.85rem 1.5rem; border-bottom: 1px solid var(--border-subtle); background: var(--bg-surface-secondary); display: flex; gap: 0.6rem;">
+        <input 
+          type="text" 
+          id="quickAddSearchInput" 
+          class="form-input" 
+          placeholder="Tìm món nhanh (ví dụ: phở bò, ức gà, yến mạch...)" 
+          style="padding: 0.5rem 0.85rem; font-size: 0.84rem;"
+        />
+      </div>
+
+      <div class="modal-body" id="quickAddListContainer" style="max-height: 400px; gap: 0.65rem; padding: 1rem 1.5rem;">
+        <!-- Dynamically rendered list of food choices with 1-click add button -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Scripts -->
+  <script src="js/database.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
