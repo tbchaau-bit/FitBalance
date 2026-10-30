@@ -19,16 +19,7 @@
 </head>
 <body>
 
-  <!-- PPTX Presentation Banner (Chế độ Báo Cáo Slide) -->
-  <div class="pptx-banner" id="pptxBanner">
-    <div class="pptx-watermark">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-      <span>BÁO CÁO THỰC ĐƠN & PHÂN TÍCH CALO TRONG NGÀY — FITBALANCE</span>
-    </div>
-    <button class="btn btn-secondary" id="exitPptxBtn" style="padding: 0.35rem 0.8rem; font-size: 0.78rem;">
-      ✕ Thoát chế độ Báo Cáo
-    </button>
-  </div>
+
 
   <!-- Header / Navigation Bar -->
   <header class="site-header" id="siteHeader">
@@ -79,23 +70,9 @@
           <span>Xóa tất cả dữ liệu / Đặt lại (Reset)</span>
         </button>
 
-        <!-- Chế độ chụp ảnh slide PPTX -->
-        <button class="btn btn-pptx" id="togglePptxModeBtn" title="Tối ưu giao diện để chụp ảnh đưa vào PowerPoint báo cáo">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-            <line x1="8" y1="21" x2="16" y2="21"></line>
-            <line x1="12" y1="17" x2="12" y2="21"></line>
-          </svg>
-          <span>Chế Độ Báo Cáo PPTX</span>
-        </button>
-
         <!-- Thêm món ăn mới -->
         <button class="btn btn-outline-primary" id="openAddFoodModalBtn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-            <line x1="12" y1="5" x2="12" y2="19"></line>
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-          </svg>
-          <span>+ Thêm Món Ăn</span>
+          <span>Thêm Món Ăn</span>
         </button>
 
         <!-- Xem khay thực đơn -->
@@ -366,7 +343,7 @@
           </div>
           <button class="btn-add-to-meal" data-meal="breakfast">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            + Thêm món vào Bữa Sáng
+            Thêm món vào Bữa Sáng
           </button>
         </div>
 
@@ -389,7 +366,7 @@
           </div>
           <button class="btn-add-to-meal" data-meal="lunch">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            + Thêm món vào Bữa Trưa
+            Thêm món vào Bữa Trưa
           </button>
         </div>
 
@@ -412,7 +389,7 @@
           </div>
           <button class="btn-add-to-meal" data-meal="dinner">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            + Thêm món vào Bữa Tối
+            Thêm món vào Bữa Tối
           </button>
         </div>
 
@@ -435,7 +412,7 @@
           </div>
           <button class="btn-add-to-meal" data-meal="snack">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            + Thêm món vào Bữa Phụ
+            Thêm món vào Bữa Phụ
           </button>
         </div>
       </div>
@@ -502,12 +479,13 @@
             </button>
           </div>
 
-          <!-- Quick Nutrition Tags -->
+          <!-- Quick Nutrition & Category Tags -->
           <div class="filter-tags-group">
+            <span class="tag-chip" data-tag="Món Chính">🍜 Món Chính</span>
+            <span class="tag-chip" data-tag="Đồ Ăn Vặt">🍿 Đồ Ăn Vặt / Tráng Miệng</span>
+            <span class="tag-chip" data-tag="Nước Uống">🥤 Nước Uống</span>
             <span class="tag-chip" data-tag="Eat Clean">🌿 Eat Clean</span>
-            <span class="tag-chip" data-tag="Giàu Protein">💪 Giàu Protein</span>
             <span class="tag-chip" data-tag="Món Việt">🇻🇳 Món Việt</span>
-            <span class="tag-chip" data-tag="Thuần Chay">🌱 Thuần Chay</span>
           </div>
         </div>
       </div>

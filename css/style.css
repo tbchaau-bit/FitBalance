@@ -1,7 +1,6 @@
 /* ==========================================================================
    CaloBalance - Design System & Modern UI Styles
    Giao diện tiếng Việt 100%, phong cách Fresh Clean UI, tông Xanh Lá & Trắng
-   Chuẩn bị sẵn sàng cho trình chiếu & chụp màn hình báo cáo PPTX
    ========================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap');
@@ -311,18 +310,6 @@ body::after {
   color: var(--primary-800);
 }
 
-.btn-pptx {
-  background: linear-gradient(135deg, #d97706, #b45309);
-  color: white;
-  box-shadow: 0 3px 10px rgba(217, 119, 6, 0.25);
-  position: relative;
-}
-
-.btn-pptx:hover {
-  background: linear-gradient(135deg, #b45309, #92400e);
-  transform: translateY(-1px);
-  box-shadow: 0 6px 14px rgba(217, 119, 6, 0.35);
-}
 
 .btn-icon-only {
   width: 38px;
@@ -1555,48 +1542,6 @@ body::after {
   gap: 0.75rem;
 }
 
-/* ==========================================================================
-   Presentation Mode (Chế độ Báo Cáo PPTX)
-   Tối ưu hóa layout để chụp ảnh đưa vào PowerPoint
-   ========================================================================== */
-body.presentation-mode {
-  background: #ffffff !important;
-}
-
-body.presentation-mode .site-header {
-  box-shadow: none;
-  border-bottom: 2px solid var(--primary-500);
-}
-
-body.presentation-mode .header-actions {
-  display: none !important;
-}
-
-body.presentation-mode .filter-toolbar {
-  border: 1px solid var(--border-subtle);
-  box-shadow: none;
-}
-
-.pptx-banner {
-  display: none;
-  background: linear-gradient(135deg, #047857, #10b981);
-  color: white;
-  padding: 0.75rem 1.5rem;
-  font-size: 0.88rem;
-  font-weight: 600;
-  justify-content: space-between;
-  align-items: center;
-}
-
-body.presentation-mode .pptx-banner {
-  display: flex;
-}
-
-.pptx-watermark {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-}
 
 /* ==========================================================================
    Toast Notification System

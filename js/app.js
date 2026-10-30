@@ -39,9 +39,7 @@
 
     // Quick Add Modal Context
     activeModalTargetMeal: 'breakfast',
-    quickAddSearchQuery: '',
-
-    isPresentationMode: false,
+    quickAddSearchQuery: ''
   };
 
   // --- DOM SELECTORS ---
@@ -49,9 +47,6 @@
     // Header
     currentDateText: document.getElementById('currentDateText'),
     headerSelectedCount: document.getElementById('headerSelectedCount'),
-    togglePptxModeBtn: document.getElementById('togglePptxModeBtn'),
-    exitPptxBtn: document.getElementById('exitPptxBtn'),
-    pptxBanner: document.getElementById('pptxBanner'),
     openAddFoodModalBtn: document.getElementById('openAddFoodModalBtn'),
     openMenuDrawerBtn: document.getElementById('openMenuDrawerBtn'),
     storageIndicator: document.getElementById('storageIndicator'),
@@ -300,6 +295,14 @@
                 state.allFoods.push(foodItem);
               }
 
+              // Đồng bộ hình ảnh mới nhất cho 5 món ăn đặc trưng nếu có thay đổi
+              if (foodItem) {
+                const refreshedFood = state.allFoods.find((f) => f.id === foodItem.id || f.name === foodItem.name);
+                if (refreshedFood && refreshedFood.image) {
+                  foodItem.image = refreshedFood.image;
+                }
+              }
+
               if (foodItem) {
                 state.mealPlan[mealKey].push({
                   foodId: foodItem.id,
@@ -384,20 +387,20 @@
       snack: []
     };
 
-    // 1. Phở bò cho Bữa Sáng (480 kcal)
-    const bf = state.allFoods.find((f) => f.id === 'bf-01');
+    // 1. Phở bò truyền thống cho Bữa Sáng (400 kcal)
+    const bf = state.allFoods.find((f) => f.id === 'main-01');
     if (bf) state.mealPlan.breakfast.push({ foodId: bf.id, quantity: 1, food: bf });
 
-    // 2. Cơm gạo lứt gà cho Bữa Trưa (510 kcal)
-    const lu = state.allFoods.find((f) => f.id === 'lu-01');
+    // 2. Cơm tấm sườn bì chả cho Bữa Trưa (650 kcal)
+    const lu = state.allFoods.find((f) => f.id === 'main-02');
     if (lu) state.mealPlan.lunch.push({ foodId: lu.id, quantity: 1, food: lu });
 
-    // 3. Salad cá ngừ cho Bữa Tối (320 kcal)
-    const di = state.allFoods.find((f) => f.id === 'di-01');
+    // 3. Bún chả Hà Nội cho Bữa Tối (450 kcal)
+    const di = state.allFoods.find((f) => f.id === 'main-03');
     if (di) state.mealPlan.dinner.push({ foodId: di.id, quantity: 1, food: di });
 
-    // 4. Sữa chua việt quất cho Bữa Phụ (160 kcal)
-    const sn = state.allFoods.find((f) => f.id === 'sn-01');
+    // 4. Trà đào cam sả cho Bữa Phụ (150 kcal)
+    const sn = state.allFoods.find((f) => f.id === 'drink-02');
     if (sn) state.mealPlan.snack.push({ foodId: sn.id, quantity: 1, food: sn });
   }
 
@@ -1211,23 +1214,7 @@
 
   // --- EVENT BINDING ---
   function bindEvents() {
-    // 1. PPTX Mode Toggle
-    if (dom.togglePptxModeBtn) {
-      dom.togglePptxModeBtn.addEventListener('click', () => {
-        document.body.classList.add('presentation-mode');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-        showToast('Đã bật Chế Độ Báo Cáo PPTX! Layout chuẩn sẵn sàng để chụp ảnh slide.', 'success');
-      });
-    }
-
-    if (dom.exitPptxBtn) {
-      dom.exitPptxBtn.addEventListener('click', () => {
-        document.body.classList.remove('presentation-mode');
-        showToast('Đã thoát Chế Độ Báo Cáo PPTX.', 'info');
-      });
-    }
-
-    // 2. Step 3: Nút Đặt Lại / Reset LocalStorage ở Header
+    // 1. Step 3: Nút Đặt Lại / Reset LocalStorage ở Header
     if (dom.headerResetStorageBtn) {
       dom.headerResetStorageBtn.addEventListener('click', () => {
         resetAllLocalStorageData();

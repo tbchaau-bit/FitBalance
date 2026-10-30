@@ -12,7 +12,6 @@ Link Repository: [https://github.com/tbchaau-bit/FitBalance/tree/main/FitBalance
 - **Thiết kế Clean UI**: Tông màu xanh lá tươi sáng (Emerald & Mint: `#10B981`, `#ECFDF5`) kết hợp nền trắng, Google Fonts (**Plus Jakarta Sans** & **Outfit**), giao diện tiếng Việt 100%.
 - **Dashboard Tổng Quan**: Vòng tròn tiến trình SVG (Circular Gauge) và thanh tiến trình (Progress Bar) theo dõi lượng Calo đã nạp / mục tiêu (2,000 kcal mặc định).
 - **Thư Viện Món Ăn Phong Phú**: Hơn 20 món ăn truyền thống Việt Nam và Eat Clean thịnh hành, chia theo 4 bữa với hình ảnh sắc nét và đầy đủ chỉ số Macros.
-- **Chế Độ Báo Cáo PPTX**: Tối ưu layout dạng slide 16:9 sắc nét, sẵn sàng chụp ảnh màn hình đưa vào PowerPoint thuyết trình.
 
 ### 📌 Step 2: Tương Tác Thêm/Xóa Món & Tính Toán Calo Real-time
 - **Kế Hoạch Thực Đơn 4 Bữa Trực Quan**: 4 cột riêng biệt cho **Bữa Sáng 🍳**, **Bữa Trưa 🍲**, **Bữa Tối 🥗**, và **Bữa Phụ 🥑**.
@@ -40,6 +39,7 @@ FitBalance/
 ├── js/
 │   ├── database.js    # Mock Database các món ăn Việt Nam & Eat Clean
 │   └── app.js         # Logic tính toán real-time, bộ lọc, tương tác & LocalStorage
+├── images/            # Hình ảnh chất lượng cao các món ăn Eat Clean & Dinh dưỡng
 └── README.md          # Tài liệu hướng dẫn sử dụng và khởi chạy
 ```
 
